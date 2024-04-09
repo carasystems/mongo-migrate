@@ -21,7 +21,7 @@
     "cross-env": "^7.0.2",
     "mocha": "^7.2.0",
     "sinon": "^9.0.2",
-    "@cyclonedx/cdxgen": "^9.9.0"
+    "@cyclonedx/cdxgen": "^10.2.2"
   },
   "main": "index",
   "engines": {
