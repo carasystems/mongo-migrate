@@ -120,7 +120,7 @@ workflows:
           context:
             - public_context
             - slack_context
-            - deploy_context
+            - deploy_oid_context
           requires:
             - build
             - hold
