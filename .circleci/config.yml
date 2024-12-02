@@ -52,7 +52,7 @@ jobs:
   npm-publish:
     circleci_ip_ranges: true
     executor:
-      name: exec/build
+      name: exec/sca
       repo: *repo-name
     working_directory: ~/mongo-migrate
     steps:
@@ -80,9 +80,6 @@ workflows:
   build-and-deploy:
     jobs:
       - build:
-          executor:
-            name: exec/build
-            repo: *repo-name
           context:
             - slack_context
           filters:
@@ -101,9 +98,6 @@ workflows:
             branches:
               ignore: /.*/
       - npm-publish:
-          executor:
-            name: exec/sca
-            repo: *repo-name
           context:
             - public_context
             - slack_context
