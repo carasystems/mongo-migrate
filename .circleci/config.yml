@@ -1,31 +1,9 @@
 version: 2.1
 
+repo-name: &repo-name mongo-migrate
+
 orbs:
-  slack: circleci/slack@4.3.3
-
-slack_success_notify: &slack_success_notify
-  slack/notify:
-    event: pass
-    branch_pattern: master,release
-    tag_pattern: v.*
-    template: SLACK_TEMPLATE_SUCCESS
-
-slack_fail_notify: &slack_fail_notify
-  slack/notify:
-    event: fail
-    branch_pattern: master,release
-    tag_pattern: v.*
-    mentions: '@here'
-    template: SLACK_TEMPLATE_FAIL
-
-node_image: &node_image cimg/node:18.16.1
-
-executors:
-  build:
-    docker:
-      - image: *node_image
-      - image: mongo:4.4
-    working_directory: ~/mongo-migrate
+  exec: carasystems/node-exec-20@0.0.6
 
 commands:
   setup_node_modules:
@@ -53,7 +31,9 @@ commands:
 
 jobs:
   build:
-    executor: build
+    executor:
+      name: exec/build
+      repo: *repo-name
     steps:
       - checkout
 
@@ -71,8 +51,9 @@ jobs:
 
   npm-publish:
     circleci_ip_ranges: true
-    docker:
-      - image: *node_image
+    executor:
+      name: exec/sca
+      repo: *repo-name
     working_directory: ~/mongo-migrate
     steps:
       - checkout
@@ -105,7 +86,7 @@ workflows:
             tags:
               only: /^v.*/
           post-steps:
-            - *slack_fail_notify
+            - exec/slack_fail_notify
       - hold:
           type: approval
           requires:
@@ -120,7 +101,7 @@ workflows:
           context:
             - public_context
             - slack_context
-            - deploy_context
+            - deploy_oid_context
           requires:
             - build
             - hold
@@ -131,5 +112,5 @@ workflows:
             branches:
               ignore: /.*/
           post-steps:
-            - *slack_success_notify
-            - *slack_fail_notify
+            - exec/slack_success_notify
+            - exec/slack_fail_notify
