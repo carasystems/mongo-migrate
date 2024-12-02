@@ -89,7 +89,7 @@ workflows:
             tags:
               only: /^v.*/
           post-steps:
-            - *slack_fail_notify
+            - exec/slack_fail_notify
       - hold:
           type: approval
           requires:
@@ -118,5 +118,5 @@ workflows:
             branches:
               ignore: /.*/
           post-steps:
-            - *slack_success_notify
-            - *slack_fail_notify
+            - exec/slack_success_notify
+            - exec/slack_fail_notify
